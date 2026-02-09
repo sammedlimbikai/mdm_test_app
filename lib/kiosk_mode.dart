@@ -1,3 +1,4 @@
+import 'package:android_intent_plus/android_intent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'kiosk_service.dart';
@@ -64,8 +65,8 @@ class _KioskModeScreenState extends State<KioskModeScreen> {
                   ElevatedButton(
                     onPressed: () async {
                       await KioskService.enableKiosk();
-                      await KioskService.blockSettings();
-                      await KioskService.disableStatusBar();
+                      // await KioskService.blockSettings();
+                      // await KioskService.disableStatusBar();
                       setState(() => _isLocked = true);
                     },
                     child: const Text("ENTER KIOSK MODE"),
@@ -75,8 +76,8 @@ class _KioskModeScreenState extends State<KioskModeScreen> {
 
                   ElevatedButton(
                     onPressed: () async {
-                      await KioskService.enableStatusBar();
-                      await KioskService.enableSettings();
+                      // await KioskService.enableStatusBar();
+                      // await KioskService.enableSettings();
                       await KioskService.disableKiosk();
                       setState(() => _isLocked = false);
                     },
@@ -105,6 +106,32 @@ class _KioskModeScreenState extends State<KioskModeScreen> {
               Text(
                 'Notes: lockTask may require device owner / provisioning on Android.',
               ),
+
+              // Test Buttons to allow only youtube apps
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      await KioskService.allowApps([
+                        'com.google.android.apps.nexuslauncher',
+                      ]);
+                    },
+                    child: const Text("ALLOW LAUNCHER"),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final intent = AndroidIntent(
+                        action: 'android.intent.action.MAIN',
+                        package: 'com.google.android.apps.nexuslauncher',
+                      );
+                      await intent.launch();
+                    },
+                    child: const Text("OPEN LAUNCHER"),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -112,3 +139,4 @@ class _KioskModeScreenState extends State<KioskModeScreen> {
     );
   }
 }
+// package:com.google.android.apps.nexuslauncher
